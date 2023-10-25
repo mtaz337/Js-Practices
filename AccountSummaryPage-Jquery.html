@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="total-row">
+            <div class="col-md-4 mt-3" style="padding-left: 0px">
+              <div class="four-column-left">
+                Customer Id<span class="colon-right">:</span>
+              </div>
+              <div class="four-column-right">1001</div>
+            </div>
+            <div class="col-md-4 mt-3">
+              <div class="four-column-left">Customer Name</div>
+              <div class="four-column-right">
+                <span class="colon-left">:</span>MD MAHEDI HASAN
+              </div>
+            </div>
+            <div class="col-md-4 mt-3">
+              <div class="four-column-left">Account Status</div>
+              <div class="four-column-right">
+                <div class="form-group">
+                  <select
+                    class="form-control"
+                    id="ddlAccountStatus"
+                    name="status"
+                  >
+                    <option value="REGULAR">REGULAR</option>
+                    <option value="CLOSED">CLOSED</option>
+                    <option value="ALL">ALL</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group account-sum-table">
+      <div class="row">
+        <div class="col-md-12">
+          <table class="table table-bordered table-striped table-responsive">
+            <thead>
+              <tr>
+                <th scope="col">Account Type</th>
+                <th scope="col">Branch</th>
+                <th scope="col">Branch Code</th>
+                <th scope="col">Account Number</th>
+                <th scope="col">Account Open Date</th>
+                <th scope="col">Maturity Date/Expiry Date</th>
+                <th scope="col">Balance</th>
+                <th scope="col">Account Status</th>
+                <th scope="col">Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Savings</td>
+                <td>Main Branch</td>
+                <td>12345</td>
+                <td>SAV123456789</td>
+                <td>2023-01-15</td>
+                <td>2025-01-15</td>
+                <td id="balance">$5,000.00</td>
+                <td name="status">REGULAR</td>
+                <td>
+                  <a
+                    href="javascript:void(0)"
+                    title="Details"
+                    onclick="fnShowDetails('1001', '12345', 'SAV123456789', 'Type A');"
+                    >Details</a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Checking</td>
+                <td>Downtown Branch</td>
+                <td>67890</td>
+                <td>CHK987654321</td>
+                <td>2023-03-10</td>
+                <td>N/A</td>
+                <td id="balance">$2,500.00</td>
+                <td name="status">CLOSED</td>
+                <td>
+                  <a
+                    href="javascript:void(0)"
+                    title="Details"
+                    onclick="fnShowDetails('1002', '67890', 'CHK987654321', 'Type B');"
+                    >Details</a
+                  >
+                </td>
+              </tr>
+              <!-- Add more rows with demo data here -->
+              <tr>
+                <td>Savings</td>
+                <td>Uptown Branch</td>
+                <td>54321</td>
+                <td>SAV987654321</td>
+                <td>2023-04-20</td>
+                <td>2024-04-20</td>
+                <td id="balance">$3,000.00</td>
+                <td name="status">REGULAR</td>
+                <td>
+                  <a
+                    href="javascript:void(0)"
+                    title="Details"
+                    onclick="fnShowDetails('1003', '54321', 'SAV987654321', 'Type C');"
+                    >Details</a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Checking</td>
+                <td>Downtown Branch</td>
+                <td>67891</td>
+                <td>CHK123450987</td>
+                <td>2023-05-15</td>
+                <td>N/A</td>
+                <td id="balance">$1,800.00</td>
+                <td name="status">REGULAR</td>
+                <td>
+                  <a
+                    href="javascript:void(0)"
+                    title="Details"
+                    onclick="fnShowDetails('1004', '67891', 'CHK123450987', 'Type D');"
+                    >Details</a
+                  >
+                </td>
+              </tr>
+              <!-- Add more rows with demo data here -->
+            </tbody>
+          </table>
+          <div id="account-summary">
+            <div class="account-number">
+              Total Number of Regular Accounts:
+              <span id="regular-account-count">0</span>
+            </div>
+            <div class="account-money">
+              Total Money in Regular Accounts: $<span id="regular-account-money"
+                >0.00</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      p {
+        line-height: 12px;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Initially, filter by "REGULAR"
+        filterTableByAccountStatus();
+
+        var regularAccountCount = 0;
+        var regularAccountMoney = 0;
+
+        $("#ddlAccountStatus").change(function () {
+          filterTableByAccountStatus();
+        });
+
+        function filterTableByAccountStatus() {
+          var selectedStatus = $("#ddlAccountStatus").val();
+          regularAccountCount = 0;
+          regularAccountMoney = 0;
+          console.log(selectedStatus);
+          if (selectedStatus === "ALL") {
+            $("tr").show(); // Show all rows when "ALL" is selected
+          } else {
+            // Hide all rows
+            $("tr").hide();
+
+            // Show rows with the selected account status
+            $("tr").each(function () {
+              var accountStatus = $(this).find('[name="status"]').text();
+              var balance = $(this).find('[id="balance"]').text();
+              balance = balance.replace("$", "");
+              balance = parseFloat(balance.replace(",", ""));
+              console.log(balance);
+              console.log(accountStatus);
+              if (accountStatus === selectedStatus) {
+                $(this).show();
+              }
+              if (accountStatus === "REGULAR") {
+                regularAccountCount++;
+                regularAccountMoney += balance;
+              }
+            });
+
+            // Show header row
+            $("tr:first").show();
+            console.log(regularAccountCount, regularAccountMoney);
+            $("#regular-account-count").text(regularAccountCount);
+            $("#regular-account-money").text(regularAccountMoney.toFixed(2));
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
